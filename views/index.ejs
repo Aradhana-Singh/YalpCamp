@@ -16,6 +16,9 @@
                 <figure class="card">
                     <img src=" <%= x["image"] %>" class="img-thumbnail"alt="image"> 
                     <figcaption class="figure-caption p-2"> <%= x["name"]%></figcaption>
+                    <p>
+                        <a class="btn btn-primary btn-sm" href="/campgrounds/<%= x["_id"]%>">More Info</a>
+                    </p>
                 </figure>   
             </div>
         <% }) %>

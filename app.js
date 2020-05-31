@@ -1,66 +1,37 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 var app = express();
-
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
-var campground = [
-    {
-        name : "Gorakhpur",
-        image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=500&q=80"
-    },
-    {
-        name : "Ranchi",
-        image: "https://images.unsplash.com/photo-1537565266759-34bbc16be345?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-        name : "Delhi",
-        image: "https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-        name : "Gorakhpur",
-        image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=500&q=80"
-    },
-    {
-        name : "Ranchi",
-        image: "https://images.unsplash.com/photo-1537565266759-34bbc16be345?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-        name : "Delhi",
-        image: "https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-        name : "Gorakhpur",
-        image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=500&q=80"
-    },
-    {
-        name : "Ranchi",
-        image: "https://images.unsplash.com/photo-1537565266759-34bbc16be345?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-        name : "Delhi",
-        image: "https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-        name : "Gorakhpur",
-        image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=500&q=80"
-    },
-    {
-        name : "Ranchi",
-        image: "https://images.unsplash.com/photo-1537565266759-34bbc16be345?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-    },
-    {
-        name : "Delhi",
-        image: "https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=80"
-    }
-];
+
+
+mongoose.connect('mongodb://localhost/yalp_camp',{
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+var campgroundSchema = new mongoose.Schema({
+    name: String,
+    image: String,
+    discription: String
+});
+var Campground = mongoose.model("Campground",campgroundSchema);
+
+
 
 app.get('/',function(req, res){
     res.render("landing");
 });
 
 app.get('/campgrounds',function(req,res){
-    res.render("campgrounds",{campground:campground});
+    Campground.find({},function(err,campground){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.render("index",{campground:campground});
+        }
+    });
 });
 
 app.get('/campgrounds/new',function(req,res){
@@ -69,9 +40,27 @@ app.get('/campgrounds/new',function(req,res){
 app.post('/campgrounds',function(req,res){
     var name = req.body.name;
     var image = req.body.image;
-    var camps = {name:name,image:image};
-    campground.push(camps);
-    res.redirect('/campgrounds');
+    var discription = req.body.discription;
+    var camps = {name:name,image:image, discription:discription};
+    Campground.create(camps,function(err,campground){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.redirect('/campgrounds');
+        }
+    })
+});
+
+app.get('/campgrounds/:id' ,function(req,res){
+    Campground.findById(req.params.id, function(err , foundCamp){
+        if(err){
+            console.log(err);
+        }
+        else {
+            res.render("show" , {campground : foundCamp});
+        }
+    });
 });
 app.listen(5500,function(){
     console.log("The YalpCamp Server Started");

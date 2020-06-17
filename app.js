@@ -1,6 +1,7 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
+var express     = require('express');
+var bodyParser  = require('body-parser');
+var mongoose    = require('mongoose');
+var  Campground = require("./models/campgrounds");
 var app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
@@ -10,14 +11,6 @@ mongoose.connect('mongodb://localhost/yalp_camp',{
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-var campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    discription: String
-});
-var Campground = mongoose.model("Campground",campgroundSchema);
-
-
 
 app.get('/',function(req, res){
     res.render("landing");

@@ -1,0 +1,46 @@
+<%- include('../partials/header.ejs') %>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <p>YelpCamp</p>
+            <div class="list-group">
+                <li class="list-group-item list-group-item-action active">Info 1</li>
+                <li class="list-group-item list-group-item-action">Info 3</li>
+                <li class="list-group-item list-group-item-action">Info 3</li>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <img src="<%= campground.image %>" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title"> <a href="#"><%= campground.name %></a> <span class="float-right">99.99$</span> </h5>
+                  <p class="card-text"><%= campground.discription %></p>
+                </div>
+            </div>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col text-right">
+                            <a href="/campgrounds/<%=campground._id%>/comments/new" class="btn btn-success btn-md">Add new comment</a>
+                        </div>
+                    </div>
+                    <hr>
+                        <% campground.comments.forEach(function(camp){ %>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p>
+                                        <strong><%=camp.author%></strong> 
+                                        <span class="float-right">10 days ago</span> 
+                                    </p>
+                                    <p >  <%=camp.text%></p>
+                                </div>
+                            </div>
+                        <%})%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%- include('../partials/footer.ejs') %>
